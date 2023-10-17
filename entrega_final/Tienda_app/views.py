@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from Tienda_app.models import Disco
-from Tienda_app.forms import Crearalbumform, Buscaralbumform, UserRegisterForm
+from Tienda_app.forms import Crearalbumform, Buscaralbumform, UserRegisterForm, UserEditForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView,DeleteView
 from django.urls import reverse_lazy
+
+
 
 
 
@@ -158,6 +160,8 @@ def eliminar_discos(request, discos_nombre):
  
     return render(request, "Tienda_app/leerDiscos.html", contexto)
 
+#Acciones con el disco
+
 class DiscoList (ListView):
     model = Disco
     template_name = "Tienda_app/ disco_lista.html"
@@ -183,3 +187,34 @@ class DiscoDelete (DeleteView):
     template_name = "Tienda_app/ disco_borrado.html"
     success_url = reverse_lazy ("list")
     
+# Editar usuario
+
+@login_required
+def editarUser(request):
+
+    usuario = request.user
+
+    if request.method == 'POST':
+
+        miFormulario = UserEditForm(request.POST)
+
+        if miFormulario.is_valid():
+
+            informacion = miFormulario.cleaned_data
+
+            usuario.email = informacion['email']
+            usuario.password1 = informacion['password1']
+            usuario.password2 = informacion['password2']
+            usuario.last_name = informacion['last_name']
+            usuario.first_name = informacion['first_name']
+
+            usuario.save()
+
+            return render(request, "Tienda_app/index.html")
+
+    else:
+
+        miFormulario = UserEditForm(initial={'email': usuario.email})
+
+    return render(request, "tienda_app/editar_user.html", {"miFormulario": miFormulario, "usuario": usuario})
+

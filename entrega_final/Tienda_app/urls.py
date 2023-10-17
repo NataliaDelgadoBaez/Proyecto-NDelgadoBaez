@@ -34,3 +34,8 @@ urlpatterns +=[
 
 ]
     
+urlpatterns +=[  
+               
+    path('editarUser', views.editarUser, name="EditarUser"), 
+
+]
