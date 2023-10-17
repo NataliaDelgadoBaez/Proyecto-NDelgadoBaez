@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from Tienda_app.views import UserEditForm, UserRegisterForm
+from Tienda_app.forms import UserEditForm, UserRegisterForm
+from django.contrib.auth.decorators import login_required
 
 
 @login_required
@@ -50,4 +51,5 @@ def register(request):
       return render(request,"/soy nuevo.html" ,  {"form":form})
 
 def iniciar_sesion(request):
+    return render(request, "Users/login.html")
     return render(request, "Users/login.html")
